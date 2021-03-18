@@ -1,0 +1,25 @@
+{
+  "name": "catwalk-reviews",
+  "version": "1.0.0",
+  "description": "database for ratings and reviews",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "server-dev": "npx nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hr-hrfe1-floyd/catwalk-reviews.git"
+  },
+  "author": "Carmen Hilbert",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hr-hrfe1-floyd/catwalk-reviews/issues"
+  },
+  "homepage": "https://github.com/hr-hrfe1-floyd/catwalk-reviews#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "postgres": "^1.0.2",
+    "postgresql": "^0.0.1"
+  }
+}
