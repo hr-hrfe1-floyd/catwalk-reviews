@@ -1,14 +1,20 @@
 const postgres = require('postgres');
 const sql = postgres
+const db = require('./queries')
 
 
 
-//sudo -u postgres -i
+//sudo -u postgres psql
+//password is password
+//\l lists databases
+// \c database connects to a database
+//\dt shows tables
+
 
 DROP DATABASE IF EXISTS reviews;
 CREATE DATABASE reviews;
 
-
+//tables that match original csv files
 CREATE TABLE IF NOT EXISTS Public."reviews"(
   Id int,
   product_id int,
@@ -44,6 +50,7 @@ CREATE TABLE IF NOT EXISTS Public."characteristic_reviews"(
   value int
   );
 
+//these commands import the csv data
  \COPY Public."reviews" FROM '/Users/carmenhilbert/Public/catwalk_data/reviews.csv' DELIMITER ',' CSV HEADER;
 
  \COPY Public."reviews_photos" FROM '/Users/carmenhilbert/Public/catwalk_data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
@@ -51,3 +58,63 @@ CREATE TABLE IF NOT EXISTS Public."characteristic_reviews"(
  \COPY Public."characteristics" FROM '/Users/carmenhilbert/Public/catwalk_data/characteristics.csv' DELIMITER ',' CSV HEADER;
 
  \COPY Public."characteristic_reviews" FROM '/Users/carmenhilbert/Public/catwalk_data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+
+ //new better tables
+
+
+ //-product_id,
+ CREATE TABLE IF NOT EXISTS Public."new_reviews"(
+  review_id int,
+  rating int,
+  date date,
+  summary varchar(1000),
+  body varchar(1000),
+  recommend bool,
+  reported bool,
+  reviewer_name varchar(100),
+  reviewer_email varchar(100),
+  response varchar(1000),
+  helpfulness int,
+  fit int,
+  length int,
+  comfort int,
+  quality int,
+  size int,
+  width int,
+  photo_1 varchar(100),
+  photo_2 varchar(100),
+  photo_3 varchar(100),
+  PRIMARY KEY(review_id)
+  );
+
+
+CREATE TABLE IF NOT EXISTS Public."reviews_by_product"(
+  id int GENERATED ALWAYS AS IDENTITY,
+  review_id int,
+  product_id int,
+  PRIMARY KEY(id),
+  CONSTRAINT fk_product
+    FOREIGN KEY(product_id)
+     REFERENCES review_metadata(product_id)
+     CONSTRAINT fk_review
+     FOREIGN KEY(review_id)
+      REFERENCES reviews(review_id)
+  );
+
+
+CREATE TABLE IF NOT EXISTS Public."review_metadata"(
+  product_id int,
+  rating_average int,
+  fit_average int,
+  length_average int,
+  comfort_average int,
+  quality_average int,
+  size_average int,
+  width_average int
+  PRIMARY KEY(product_id)
+  );
+
+//insert into...select from construct example:
+
+//insert into student (student_id, s_name)
+//select student_id, s_name from queue
