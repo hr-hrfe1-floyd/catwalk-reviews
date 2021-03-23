@@ -6,9 +6,7 @@ const db = require('./queries.js')
 let app = express();
 module.exports.app = app;
 
-app.get('/reviews', function (req, res) {
-  res.json('hello from get reviews');
-});
+app.get('/reviews', db.getReviews);
 
 app.get('/reviews/meta', function (req, res) {
 });

@@ -8,18 +8,33 @@ const pool = new Pool({
 })
 
 const getReviews = (request, response) => {
-  var productId = request.params.product_id;
-  console.log(productId);
-  var sort = request.params.sort;
-  console.log('sort', sort);
-  // pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
-  //   response.status(200).json(results.rows)
-  // })
-
+  //console.log('request', request);
+ // console.log('request.body', request.body);
+  var productId = request.query.product_id;
+ // console.log('product_Id,', productId);
+ // console.log('params', request.params);
+  var sort = request.query.sort;
+  var sortString = '';
+  if (sort === 'helpful') {
+    sortString = 'helpfulness DESC;';
+  } else if (sort === 'relevant') {
+    sortString = 'helpfulness DESC, date DESC;';
+  } else if (sort === 'newest') {
+    sortString = 'date DESC;';
+  }
+ // console.log('sort', sort);
+  pool.query('SELECT * FROM reviews WHERE (product_id = ' + productId + ' AND reported = false) ORDER BY ' + sortString)
+  .then((res) => {
+    console.log('response', res.rows);
+    response.json(res.rows)
+  })
+  .catch(err => console.error('Error executing query', err.stack))
   //SELECT * FROM reviews WHERE (product_id = 2 AND reported = false) ORDER BY helpfulness DESC LIMIT 5
+}
+
+const getMetadata = (request, response) => {
+  console.log('hi from get metadata');
+
 }
 
 const updateHelpful = (request, response) => {
