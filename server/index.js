@@ -8,8 +8,7 @@ module.exports.app = app;
 
 app.get('/reviews', db.getReviews);
 
-app.get('/reviews/meta', function (req, res) {
-});
+app.get('/reviews/meta', db.getMetadata);
 
 app.post('/reviews', function (req, res) {
 });
