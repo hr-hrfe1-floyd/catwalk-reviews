@@ -1,6 +1,6 @@
 const postgres = require('postgres');
 const sql = postgres
-const db = require('./queries')
+//const db = require('./queries')
 
 
 
@@ -15,8 +15,10 @@ DROP DATABASE IF EXISTS reviews;
 CREATE DATABASE reviews;
 
 //tables that match original csv files
+DROP TABLE IF EXISTS reviews;
+
 CREATE TABLE IF NOT EXISTS Public."reviews"(
-  Id int,
+  review_id int,
   product_id int,
   rating int,
   date date,
@@ -27,9 +29,11 @@ CREATE TABLE IF NOT EXISTS Public."reviews"(
   reviewer_name varchar(100),
   reviewer_email varchar(100),
   response varchar(1000),
-  helpfulness int
+  helpfulness int,
+  PRIMARY KEY(review_id)
   );
 
+DROP TABLE IF EXISTS reviews_photos;
 
   CREATE TABLE IF NOT EXISTS Public."reviews_photos"(
     Id int,
@@ -37,18 +41,25 @@ CREATE TABLE IF NOT EXISTS Public."reviews"(
     url varchar(1000)
     );
 
+DROP TABLE IF EXISTS characteristics;
+
 CREATE TABLE IF NOT EXISTS Public."characteristics"(
-  Id int,
+  characteristic_id int,
   product_id int,
-  name varchar(100)
+  name varchar(100),
+  PRIMARY KEY(characteristic_id)
   );
 
+DROP TABLE IF EXISTS characteristic_reviews;
 CREATE TABLE IF NOT EXISTS Public."characteristic_reviews"(
   Id int,
-  characteristic_id int,
-  review_id int,
+  characteristic_id int references characteristics(characteristic_id),
+  review_id int references reviews(review_id),
   value int
   );
+  // CONSTRAINT fk_characteristic
+  //   FOREIGN KEY(characteristic_id)
+  //    REFERENCES characteristics(characteristic_id)
 
 //these commands import the csv data
  \COPY Public."reviews" FROM '/Users/carmenhilbert/Public/catwalk_data/reviews.csv' DELIMITER ',' CSV HEADER;
