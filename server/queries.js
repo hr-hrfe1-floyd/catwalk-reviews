@@ -71,11 +71,11 @@ const getMetadata = (request, response) => {
 const updateHelpful = (request, response) => {
     var reviewId = request.params.review_id;
     console.log(reviewId);
-    pool.query('SELECT helpfulness FROM reviews WHERE (id = ' + reviewId + ')')
+    pool.query('SELECT helpfulness FROM reviews WHERE (review_id = ' + reviewId + ')')
     .then((res) =>  {
       console.log('helpfulness', res.rows[0].helpfulness)
       var update = res.rows[0].helpfulness + 1
-      pool.query('UPDATE reviews SET helpfulness = ' + update + 'WHERE (id = ' + reviewId + ')')
+      pool.query('UPDATE reviews SET helpfulness = ' + update + 'WHERE (review_id = ' + reviewId + ')')
     })
     .then(response.status(204).end())
     .catch(err => console.error('Error executing query', err.stack))
@@ -84,7 +84,7 @@ const updateHelpful = (request, response) => {
 const reportReview = (request, response) => {
   var reviewId = request.params.review_id;
   console.log(reviewId);
-  pool.query('UPDATE reviews SET reported =  true WHERE (id = ' + reviewId + ')')
+  pool.query('UPDATE reviews SET reported =  true WHERE (review_id = ' + reviewId + ')')
     .then(response.status(204).end())
     .catch(err => console.error('Error executing query', err.stack))
 }
