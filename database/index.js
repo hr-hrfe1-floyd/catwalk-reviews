@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS Public."reviews"(
   PRIMARY KEY(review_id)
   );
 
+CREATE INDEX product ON reviews (product_id);
+
 DROP TABLE IF EXISTS reviews_photos;
 
   CREATE TABLE IF NOT EXISTS Public."reviews_photos"(
@@ -50,6 +52,8 @@ CREATE TABLE IF NOT EXISTS Public."characteristics"(
   PRIMARY KEY(characteristic_id)
   );
 
+CREATE INDEX productID ON characteristics (product_id);
+
 DROP TABLE IF EXISTS characteristic_reviews;
 CREATE TABLE IF NOT EXISTS Public."characteristic_reviews"(
   Id int,
@@ -57,18 +61,25 @@ CREATE TABLE IF NOT EXISTS Public."characteristic_reviews"(
   review_id int references reviews(review_id),
   value int
   );
+
+  CREATE INDEX characteristicID ON characteristic_reviews (characteristic_id);
+  CREATE INDEX reviewID ON characteristic_reviews (review_id);
   // CONSTRAINT fk_characteristic
   //   FOREIGN KEY(characteristic_id)
   //    REFERENCES characteristics(characteristic_id)
 
 //these commands import the csv data
  \COPY Public."reviews" FROM '/Users/carmenhilbert/Public/catwalk_data/reviews.csv' DELIMITER ',' CSV HEADER;
+ //\COPY Public."reviews" FROM '/home/ubuntu/catwalk/reviews.csv' DELIMITER ',' CSV HEADER;
 
  \COPY Public."reviews_photos" FROM '/Users/carmenhilbert/Public/catwalk_data/reviews_photos.csv' DELIMITER ',' CSV HEADER;
+ // \COPY Public."reviews_photos" FROM '/home/ubuntu/catwalk/reviews_photos.csv' DELIMITER ',' CSV HEADER;
 
  \COPY Public."characteristics" FROM '/Users/carmenhilbert/Public/catwalk_data/characteristics.csv' DELIMITER ',' CSV HEADER;
+ //COPY Public."characteristics" FROM '/home/ubuntu/catwalk/characteristics.csv' DELIMITER ',' CSV HEADER;
 
  \COPY Public."characteristic_reviews" FROM '/Users/carmenhilbert/Public/catwalk_data/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
+ //\COPY Public."characteristic_reviews" FROM '/home/ubuntu/catwalk/characteristic_reviews.csv' DELIMITER ',' CSV HEADER;
 
  //new better tables
 
@@ -129,3 +140,19 @@ CREATE TABLE IF NOT EXISTS Public."review_metadata"(
 
 //insert into student (student_id, s_name)
 //select student_id, s_name from queue
+
+
+
+//scp -i "floyd.pem" /Users/carmenhilbert/Public/catwalk_data/reviews.csv ubuntu@ec2-52-14-141-202.us-east-2.compute.amazonaws.com:/home/ubuntu/catwalk
+//scp -i "floyd.pem" /Users/carmenhilbert/Public/catwalk_data/characteristic_reviews.csv ubuntu@ec2-52-14-141-202.us-east-2.compute.amazonaws.com:/home/ubuntu/catwalk
+//scp -i "floyd.pem" /Users/carmenhilbert/Public/catwalk_data/reviews_photos.csv ubuntu@ec2-52-14-141-202.us-east-2.compute.amazonaws.com:/home/ubuntu/catwalk
+//scp -i "floyd.pem" /Users/carmenhilbert/Public/catwalk_data/characteristics.csv ubuntu@ec2-52-14-141-202.us-east-2.compute.amazonaws.com:/home/ubuntu/catwalk
+
+//chmod 400 floyd.pem
+//ssh -i "floyd.pem" ubuntu@ec2-52-14-141-202.us-east-2.compute.amazonaws.com
+//ssh -i "floyd.pem" ubuntu@ec2-18-218-26-142.us-east-2.compute.amazonaws.com
+
+//server:
+// ssh -i "floyd.pem" ubuntu@ec2-3-128-28-12.us-east-2.compute.amazonaws.com
+
+

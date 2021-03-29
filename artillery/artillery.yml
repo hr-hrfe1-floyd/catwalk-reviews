@@ -1,0 +1,62 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 10
+      arrivalCount: 5
+  variables:
+    productIds:
+      - [1, 27897, 37897]
+
+
+scenarios:
+  # - name: "put helpful"
+  #   flow:
+  #     - put:
+  #         url: "/reviews/1/helpful"
+  #     - put:
+  #         url: "/reviews/18908/helpful"
+  #     - put:
+  #         url: "/reviews/1893908/helpful"
+  #     - put:
+  #         url: "/reviews/1893909/helpful"
+  #     - log: "sent some PUT requests"
+
+  # - name: "GET reviews"
+  #   flow:
+  #     - get:
+  #         url: "/reviews"
+  #         qs:
+  #           product_id: "2"
+  #           sort: "newest"
+
+  - name: "GET reviews/meta"
+    flow:
+      - get:
+          url: "/reviews/meta"
+          qs:
+            product_id: "28978"
+      - get:
+          url: "/reviews/meta"
+          qs:
+            product_id: "2"
+      - get:
+          url: "/reviews/meta"
+          qs:
+            product_id: "987979"
+
+
+    # flow:
+    #   - put:
+    #       url: "/reviews/{{review_id}}/helpful"
+    #       json: {review_id: "7897"}
+
+
+    # flow:
+    # - loop:
+    #   - put:
+    #       url: "/reviews{{$review_id}}helpful"
+    # count: 1
+    # over:
+    #   - "1"
+    #   - "18908"
+

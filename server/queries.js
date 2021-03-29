@@ -7,12 +7,16 @@ const pool = new Pool({
   port: 5432,
 })
 
+//host:  3.128.28.12
+//18.218.26.142
+
 const getReviews = (request, response) => {
   //console.log('request', request);
  // console.log('request.body', request.body);
+ console.log('request.query.product_id', request.query.product_id);
   var productId = request.query.product_id;
  // console.log('product_Id,', productId);
- // console.log('params', request.params);
+  //console.log('params', request.params);
   var sort = request.query.sort;
   var sortString = '';
   if (sort === 'helpful') {
@@ -44,7 +48,7 @@ const getMetadata = (request, response) => {
   pool.query('SELECT characteristic_reviews.characteristic_id, characteristic_reviews.value, characteristics.name FROM characteristics JOIN characteristic_reviews ON characteristic_reviews.characteristic_id = characteristics.characteristic_id JOIN reviews ON reviews.review_id = characteristic_reviews.review_id WHERE reviews.product_id = ' + productId + ';')
 
   .then((res) => {
-    console.log('response from characteristics table', res.rows);
+    //console.log('response from characteristics table', res.rows);
     for (var i = 0; i < res.rows.length; i++) {
       var char = res.rows[i].name;
       if (characteristics[char] !== undefined) {
@@ -60,7 +64,7 @@ const getMetadata = (request, response) => {
       }
     }
 
-    console.log('characteristics object', characteristics);
+    //console.log('characteristics object', characteristics);
   })
   .then(()=> {
     response.json({product_id: productId, characteristics: characteristics})
