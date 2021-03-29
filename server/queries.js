@@ -36,41 +36,61 @@ const getReviews = (request, response) => {
   //SELECT * FROM reviews WHERE (product_id = 2 AND reported = false) ORDER BY helpfulness DESC LIMIT 5
 }
 
+//old version for comparison:
+// const getMetadata = (request, response) => {
+//   console.log('hi from get metadata');
+//   var productId = request.query.product_id;
+//   console.log('productId, ', productId);
+//   //create characteristics object
+//   var characteristics = {};
+//   var characteristic_ids = [];
+//   //get a list of the characteristics that have been reviewed for that product
+//   // pool.query('SELECT * FROM characteristics WHERE (product_id = ' + productId + ');')
+//   pool.query( 'SELECT characteristic_reviews.characteristic_id, characteristic_reviews.value, characteristics.name FROM characteristics JOIN characteristic_reviews ON characteristic_reviews.characteristic_id = characteristics.characteristic_id JOIN reviews ON reviews.review_id = characteristic_reviews.review_id WHERE reviews.product_id =' + productId + ';')
+
+//   .then((res) => {
+//     console.log('response from characteristics table', res.rows);
+//     for (var i = 0; i < res.rows.length; i++) {
+//       var char = res.rows[i].name;
+//       if (characteristics[char] !== undefined) {
+//         characteristics[char].values.push(res.rows[i].value);
+//         characteristics[char].average = characteristics[char].values.reduce((a, b) => (a + b)) / characteristics[char].values.length
+//         }
+//       else {
+//         characteristics[char] = {
+//           id: res.rows[i].characteristic_id,
+//           values: [res.rows[i].value],
+//           average: res.rows[i].value
+//         }
+//       }
+//     }
+
+//     //console.log('characteristics object', characteristics);
+//   })
+//   .then(()=> {
+//     response.json({product_id: productId, characteristics: characteristics})
+//   })
+//   .catch(err => console.error('Error executing query', err.stack))
+// }
+
 const getMetadata = (request, response) => {
-  console.log('hi from get metadata');
+  //console.log('hi from get metadata');
   var productId = request.query.product_id;
   console.log('productId, ', productId);
   //create characteristics object
   var characteristics = {};
-  var characteristic_ids = [];
-  //get a list of the characteristics that have been reviewed for that product
-  // pool.query('SELECT * FROM characteristics WHERE (product_id = ' + productId + ');')
-  pool.query('SELECT characteristic_reviews.characteristic_id, characteristic_reviews.value, characteristics.name FROM characteristics JOIN characteristic_reviews ON characteristic_reviews.characteristic_id = characteristics.characteristic_id JOIN reviews ON reviews.review_id = characteristic_reviews.review_id WHERE reviews.product_id = ' + productId + ';')
 
+  pool.query('SELECT characteristics.name,AVG (characteristic_reviews.value):: NUMERIC(10,2) FROM characteristics JOIN characteristic_reviews ON characteristic_reviews.characteristic_id = characteristics.characteristic_id JOIN reviews ON reviews.review_id = characteristic_reviews.review_id WHERE reviews.product_id = ' + productId + 'GROUP BY characteristic_reviews.characteristic_id, characteristics.name ORDER BY characteristics.name;')
   .then((res) => {
-    //console.log('response from characteristics table', res.rows);
-    for (var i = 0; i < res.rows.length; i++) {
-      var char = res.rows[i].name;
-      if (characteristics[char] !== undefined) {
-        characteristics[char].values.push(res.rows[i].value);
-        characteristics[char].average = characteristics[char].values.reduce((a, b) => (a + b)) / characteristics[char].values.length
-        }
-      else {
-        characteristics[char] = {
-          id: res.rows[i].characteristic_id,
-          values: [res.rows[i].value],
-          average: res.rows[i].value
-        }
-      }
-    }
-
-    //console.log('characteristics object', characteristics);
-  })
-  .then(()=> {
-    response.json({product_id: productId, characteristics: characteristics})
+    //console.log('new query', res.rows)
+    response.json({product_id: productId, characteristics: res.rows})
   })
   .catch(err => console.error('Error executing query', err.stack))
 }
+
+
+
+
 
 const updateHelpful = (request, response) => {
     var reviewId = request.params.review_id;
@@ -99,3 +119,34 @@ module.exports = {
   reportReview,
   getMetadata
 }
+
+
+
+
+
+// SELECT
+//   characteristic_reviews.characteristic_id,
+//   characteristic_reviews.value,
+//   characteristics.name
+// FROM characteristics
+// JOIN characteristic_reviews
+//   ON characteristic_reviews.characteristic_id = characteristics.characteristic_id
+// JOIN reviews
+//   ON reviews.review_id = characteristic_reviews.review_id
+// WHERE reviews.product_id = 1
+// ORDER BY characteristics.name;
+
+// SELECT
+//   characteristic_reviews.characteristic_id,
+//   characteristics.name,
+//   AVG (characteristic_reviews.value):: NUMERIC(10,2)
+// FROM characteristics
+// JOIN characteristic_reviews
+//   ON characteristic_reviews.characteristic_id = characteristics.characteristic_id
+// JOIN reviews
+//   ON reviews.review_id = characteristic_reviews.review_id
+// WHERE reviews.product_id = 17997
+// GROUP BY characteristic_reviews.characteristic_id, characteristics.name
+// ORDER BY characteristics.name;
+
+

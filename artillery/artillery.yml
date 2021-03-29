@@ -2,7 +2,7 @@ config:
   target: "http://localhost:3000"
   phases:
     - duration: 10
-      arrivalCount: 5
+      arrivalCount: 10
   variables:
     productIds:
       - [1, 27897, 37897]
